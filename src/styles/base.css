@@ -1,0 +1,210 @@
+:root {
+  --accent: #4340b8;
+  --accent-dark: #26215c;
+
+  --bg: #ffffff;
+  --text: #000000;
+  --text-muted: #6d6d6d;
+  --surface: #ececec;
+  --input: #c4c4c4;
+  --input-text: #000000;
+  --panel: #d9d9d9;
+  --card: #ffffff;
+  --border: #000000;
+  --line: #d0d0d0;
+  --link: #4340b8;
+  --error: #c62828;
+  --success: #2e7d32;
+  --focus: #4340b8;
+  --shadow: 0 18px 50px rgb(38 33 92 / 18%);
+
+  /* градиент кнопок и «нажатое» состояние */
+  --btn-bg: linear-gradient(90deg, #4340b8 40%, #26215c 100%);
+  --btn-fg: #e6e6f8;
+  --btn-hover: brightness(1.15);
+  --press-bg: linear-gradient(90deg, #1b1745, #0f0c2e);
+  --press-fg: #ffffff;
+  --press-solid: #1b1745;
+  --round-bg: linear-gradient(135deg, #4340b8, #2b2766);
+
+  /* боковая панель */
+  --side-1: #4340b8;
+  --side-2: #342f94;
+  --side-3: #26215c;
+  --side-4: #201c52;
+
+  /* диагональные полосы */
+  --deco-light: #d9d9d9;
+  --deco-dark-from: #3d3a8c;
+  --deco-dark-to: #28235f;
+
+  color-scheme: light;
+  font-family: 'Roboto', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+/* Тёмная тема «Полночный индиго»: включается вручную... */
+:root[data-theme='dark'] {
+  --bg: #0b0b17;
+  --text: #ecebfa;
+  --text-muted: #9b9abd;
+  --surface: #17172c;
+  --input: #20203c;
+  --input-text: #ecebfa;
+  --panel: #12122a;
+  --card: #15152b;
+  --border: #2c2c52;
+  --line: #26264a;
+  --link: #a19eff;
+  --error: #ff8f9d;
+  --success: #6fe0a0;
+  --focus: #a19eff;
+  --shadow: 0 24px 70px rgb(0 0 0 / 55%);
+
+  --btn-bg: linear-gradient(90deg, #5d59ea 30%, #3a34a8 100%);
+  --btn-fg: #ffffff;
+  --btn-hover: brightness(1.12);
+  --press-bg: linear-gradient(90deg, #c7c5ff, #a19eff);
+  --press-fg: #14123a;
+  --press-solid: #b3b0ff;
+  --round-bg: linear-gradient(135deg, #4f4bd6, #2c2790);
+
+  --side-1: #35318f;
+  --side-2: #29256f;
+  --side-3: #1a1750;
+  --side-4: #120f3a;
+
+  --deco-light: #3a3a66;
+  --deco-dark-from: #2d2a6a;
+  --deco-dark-to: #15123b;
+  color-scheme: dark;
+}
+
+/* ...или системной настройкой, если ручной выбор не сделан */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --bg: #0b0b17;
+    --text: #ecebfa;
+    --text-muted: #9b9abd;
+    --surface: #17172c;
+    --input: #20203c;
+    --input-text: #ecebfa;
+    --panel: #12122a;
+    --card: #15152b;
+    --border: #2c2c52;
+    --line: #26264a;
+    --link: #a19eff;
+    --error: #ff8f9d;
+    --success: #6fe0a0;
+    --focus: #a19eff;
+    --shadow: 0 24px 70px rgb(0 0 0 / 55%);
+
+    --btn-bg: linear-gradient(90deg, #5d59ea 30%, #3a34a8 100%);
+    --btn-fg: #ffffff;
+    --btn-hover: brightness(1.12);
+    --press-bg: linear-gradient(90deg, #c7c5ff, #a19eff);
+    --press-fg: #14123a;
+    --press-solid: #b3b0ff;
+    --round-bg: linear-gradient(135deg, #4f4bd6, #2c2790);
+
+    --side-1: #35318f;
+    --side-2: #29256f;
+    --side-3: #1a1750;
+    --side-4: #120f3a;
+
+    --deco-light: #3a3a66;
+    --deco-dark-from: #2d2a6a;
+    --deco-dark-to: #15123b;
+    color-scheme: dark;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.icon {
+  display: inline-flex;
+  flex: none;
+  width: 26px;
+  height: 26px;
+
+  & svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* Диагональные полосы в углу */
+.deco {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  width: min(52vw, 1000px);
+  height: auto;
+  aspect-ratio: 960 / 750;
+  pointer-events: none;
+
+  & .deco-accent {
+    fill: var(--accent);
+  }
+
+  & .deco-light {
+    fill: var(--deco-light);
+  }
+
+  & .deco-dark {
+    fill: url('#deco-gradient');
+  }
+}

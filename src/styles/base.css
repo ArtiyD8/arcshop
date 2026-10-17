@@ -2,30 +2,34 @@
   --accent: #4340b8;
   --accent-dark: #26215c;
 
-  --bg: #ffffff;
-  --text: #000000;
-  --text-muted: #6d6d6d;
-  --surface: #ececec;
-  --input: #c4c4c4;
+  --bg: #f5f5f7;
+  --text: #14142b;
+  --text-muted: #6a6a80;
+  --surface: #e9e9ef;
+  --input: #e9e9ef;
   --input-text: #000000;
-  --panel: #d9d9d9;
+  --panel: #ffffff;
   --card: #ffffff;
   --border: #000000;
-  --line: #d0d0d0;
+  --line: #e3e3ea;
   --link: #4340b8;
   --error: #c62828;
   --success: #2e7d32;
   --focus: #4340b8;
-  --shadow: 0 18px 50px rgb(38 33 92 / 18%);
+  --shadow: 0 8px 28px rgb(20 20 43 / 12%);
+  --shadow-card: 0 1px 2px rgb(20 20 43 / 6%), 0 6px 18px rgb(20 20 43 / 6%);
+  --sale: #c0392b;
+  --success-solid: #2e7d32;
+  --star: #e0a100;
 
   /* градиент кнопок и «нажатое» состояние */
-  --btn-bg: linear-gradient(90deg, #4340b8 40%, #26215c 100%);
+  --btn-bg: #4340b8;
   --btn-fg: #e6e6f8;
   --btn-hover: brightness(1.15);
   --press-bg: linear-gradient(90deg, #1b1745, #0f0c2e);
   --press-fg: #ffffff;
   --press-solid: #1b1745;
-  --round-bg: linear-gradient(135deg, #4340b8, #2b2766);
+  --round-bg: #4340b8;
 
   /* боковая панель */
   --side-1: #4340b8;
@@ -40,6 +44,13 @@
 
   color-scheme: light;
   font-family: 'Roboto', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* меню в боковой панели */
+  --nav-bg: #e8e8ee;
+  --nav-fg: #2a2a40;
+  --nav-hover: rgb(20 20 43 / 6%);
+  --nav-active-bg: #ffffff;
+  --nav-active-fg: #4340b8;
+  --nav-active-shadow: 0 1px 3px rgb(20 20 43 / 15%);
 }
 
 /* Тёмная тема «Полночный индиго»: включается вручную... */
@@ -59,14 +70,18 @@
   --success: #6fe0a0;
   --focus: #a19eff;
   --shadow: 0 24px 70px rgb(0 0 0 / 55%);
+  --shadow-card: none;
+  --sale: #ff8f9d;
+  --success-solid: #2f9e6b;
+  --star: #ffc233;
 
-  --btn-bg: linear-gradient(90deg, #5d59ea 30%, #3a34a8 100%);
-  --btn-fg: #ffffff;
+  --btn-bg: #7a77f0;
+  --btn-fg: #0b0b17;
   --btn-hover: brightness(1.12);
   --press-bg: linear-gradient(90deg, #c7c5ff, #a19eff);
   --press-fg: #14123a;
   --press-solid: #b3b0ff;
-  --round-bg: linear-gradient(135deg, #4f4bd6, #2c2790);
+  --round-bg: #7a77f0;
 
   --side-1: #35318f;
   --side-2: #29256f;
@@ -77,6 +92,12 @@
   --deco-dark-from: #2d2a6a;
   --deco-dark-to: #15123b;
   color-scheme: dark;
+  --nav-bg: #1c1c2b;
+  --nav-fg: #d4d4e4;
+  --nav-hover: rgb(255 255 255 / 7%);
+  --nav-active-bg: #4a46c8;
+  --nav-active-fg: #ffffff;
+  --nav-active-shadow: none;
 }
 
 /* ...или системной настройкой, если ручной выбор не сделан */
@@ -97,14 +118,18 @@
     --success: #6fe0a0;
     --focus: #a19eff;
     --shadow: 0 24px 70px rgb(0 0 0 / 55%);
+    --shadow-card: none;
+    --sale: #ff8f9d;
+    --success-solid: #2f9e6b;
+    --star: #ffc233;
 
-    --btn-bg: linear-gradient(90deg, #5d59ea 30%, #3a34a8 100%);
-    --btn-fg: #ffffff;
+    --btn-bg: #7a77f0;
+    --btn-fg: #0b0b17;
     --btn-hover: brightness(1.12);
     --press-bg: linear-gradient(90deg, #c7c5ff, #a19eff);
     --press-fg: #14123a;
     --press-solid: #b3b0ff;
-    --round-bg: linear-gradient(135deg, #4f4bd6, #2c2790);
+    --round-bg: #7a77f0;
 
     --side-1: #35318f;
     --side-2: #29256f;
@@ -115,6 +140,12 @@
     --deco-dark-from: #2d2a6a;
     --deco-dark-to: #15123b;
     color-scheme: dark;
+    --nav-bg: #1c1c2b;
+    --nav-fg: #d4d4e4;
+    --nav-hover: rgb(255 255 255 / 7%);
+    --nav-active-bg: #4a46c8;
+    --nav-active-fg: #ffffff;
+    --nav-active-shadow: none;
   }
 }
 

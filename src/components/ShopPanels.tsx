@@ -1,25 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
-import type { Product } from '../data/demo-products';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../auth-context';
 import { useI18n } from '../i18n-context';
-import { useShop } from '../shop-context';
+import type { TranslationKey } from '../i18n';
+import { formatMoney } from '../lib/format';
+import { MAX_COMPARE, useShop } from '../shop-context';
+import type { OrderSummary, Product } from '../shared/types';
 import { Icon } from './Icon';
 import { PanelHeader, Popover } from './Popover';
-
-function useMoney(): (value: number) => string {
-  const { lang } = useI18n();
-  return (value) =>
-    new Intl.NumberFormat(lang === 'ru' ? 'ru-RU' : 'en-US', {
-      style: 'currency',
-      currency: 'RUB',
-      maximumFractionDigits: 0,
-    }).format(value);
-}
+import { ProductImage } from './ProductImage';
+import { useProductLink } from '../lib/use-product-link';
 
 function Thumb({ product }: { product: Product }) {
   return (
     <span className="thumb">
-      <Icon name={product.icon} />
+      <ProductImage product={product} />
     </span>
   );
 }
@@ -85,13 +81,13 @@ export function ChatPanel() {
 
 /* ---------- Избранное ---------- */
 export function FavoritesPanel() {
-  const { t } = useI18n();
-  const money = useMoney();
-  const { favorites, removeFavorite, addToCart } = useShop();
+  const { t, lang } = useI18n();
+  const { favorites, toggleFavorite, addToCart } = useShop();
+  const productLink = useProductLink();
 
   return (
     <Popover label={t('fav.title')} icon="heart" badge={favorites.length}>
-      {() => (
+      {(close) => (
         <>
           <PanelHeader title={t('fav.title')} />
           {favorites.length === 0 ? (
@@ -102,10 +98,12 @@ export function FavoritesPanel() {
                 <li key={product.id} className="row">
                   <Thumb product={product} />
                   <span className="row-info">
-                    <span className="row-name">{product.name}</span>
-                    <span className="row-price">{money(product.price)}</span>
+                    <Link to={productLink(product.id)} state={{ modal: true }} className="row-name" onClick={close}>
+                      {product.name}
+                    </Link>
+                    <span className="row-price">{formatMoney(product.price, lang)}</span>
                   </span>
-                  <button className="chip-btn" type="button" onClick={() => addToCart(product)}>
+                  <button className="chip-btn" type="button" onClick={() => addToCart(product.id)}>
                     {t('fav.addToCart')}
                   </button>
                   <button
@@ -113,7 +111,7 @@ export function FavoritesPanel() {
                     type="button"
                     aria-label={t('fav.remove')}
                     title={t('fav.remove')}
-                    onClick={() => removeFavorite(product.id)}
+                    onClick={() => toggleFavorite(product.id)}
                   >
                     <Icon name="trash" />
                   </button>
@@ -127,16 +125,48 @@ export function FavoritesPanel() {
   );
 }
 
-/* ---------- Корзина ---------- */
+/* ---------- Корзина: оформление заказа и выбор товаров для сравнения ---------- */
 export function CartPanel() {
-  const { t } = useI18n();
-  const money = useMoney();
-  const { cart, cartTotal, setQty, removeFromCart, clearCart } = useShop();
-  const count = cart.reduce((sum, item) => sum + item.qty, 0);
+  const { t, tf, lang } = useI18n();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const productLink = useProductLink();
+  const { cart, cartCount, cartTotal, setQty, removeFromCart, clearCart, checkout, compareIds, toggleCompare } = useShop();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<TranslationKey | null>(null);
+  const [ordered, setOrdered] = useState<OrderSummary | null>(null);
+
+  const compareCategory = compareIds.length ? cart.find((i) => i.product.id === compareIds[0])?.product.category : undefined;
+  /** почему товар нельзя добавить к сравнению (null — можно) */
+  const compareBlock = (product: Product): TranslationKey | null => {
+    if (compareIds.includes(product.id)) return null;
+    if (compareIds.length >= MAX_COMPARE) return 'cart.compareMax';
+    if (compareCategory && product.category !== compareCategory) return 'cart.compareOther';
+    return null;
+  };
+
+  async function onCheckout(close: () => void) {
+    if (!user) {
+      close();
+      navigate('/login');
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    const result = await checkout();
+    setBusy(false);
+    if (result.ok) setOrdered(result.order);
+    else setError(result.error);
+  }
+
+  const onCompare = (close: () => void) => {
+    close();
+    navigate(`/compare?ids=${compareIds.join(',')}`);
+  };
 
   return (
-    <Popover label={t('cart.title')} icon="cart" badge={count}>
-      {() => (
+    <Popover label={t('cart.title')} icon="cart" badge={cartCount}>
+      {(close) => (
         <>
           <PanelHeader title={t('cart.title')}>
             {cart.length > 0 && (
@@ -145,46 +175,86 @@ export function CartPanel() {
               </button>
             )}
           </PanelHeader>
+
           {cart.length === 0 ? (
-            <Empty icon="cart" text={t('cart.empty')} />
+            ordered ? (
+              <div className="empty ordered" role="status">
+                <Icon name="check" />
+                <strong>{t('cart.ordered')}</strong>
+                <p>{tf('cart.orderedHint', { id: ordered.id.slice(0, 8).toUpperCase() })}</p>
+              </div>
+            ) : (
+              <Empty icon="cart" text={t('cart.empty')} />
+            )
           ) : (
             <>
               <ul className="pop-body list">
-                {cart.map(({ product, qty }) => (
-                  <li key={product.id} className="row">
-                    <Thumb product={product} />
-                    <span className="row-info">
-                      <span className="row-name">{product.name}</span>
-                      <span className="row-price">{money(product.price * qty)}</span>
-                    </span>
-                    <span className="stepper">
-                      <button type="button" aria-label={t('cart.dec')} onClick={() => setQty(product.id, qty - 1)}>
-                        <Icon name="minus" />
+                {cart.map(({ product, qty }) => {
+                  const block = compareBlock(product);
+                  return (
+                    <li key={product.id} className="row">
+                      <label className={block ? 'cmp-check disabled' : 'cmp-check'} title={block ? t(block) : t('cart.compare')}>
+                        <input
+                          type="checkbox"
+                          checked={compareIds.includes(product.id)}
+                          disabled={block !== null}
+                          onChange={() => toggleCompare(product.id)}
+                          aria-label={`${t('cart.compare')}: ${product.name}`}
+                        />
+                        <Icon name="compare" />
+                      </label>
+                      <Thumb product={product} />
+                      <span className="row-info">
+                        <Link to={productLink(product.id)} state={{ modal: true }} className="row-name" onClick={close}>
+                          {product.name}
+                        </Link>
+                        <span className="row-price">{formatMoney(product.price * qty, lang)}</span>
+                      </span>
+                      <span className="stepper">
+                        <button type="button" aria-label={t('cart.dec')} onClick={() => setQty(product.id, qty - 1)}>
+                          <Icon name="minus" />
+                        </button>
+                        <output aria-live="polite">{qty}</output>
+                        <button type="button" aria-label={t('cart.inc')} onClick={() => setQty(product.id, qty + 1)}>
+                          <Icon name="plus" />
+                        </button>
+                      </span>
+                      <button
+                        className="icon-btn"
+                        type="button"
+                        aria-label={t('cart.remove')}
+                        title={t('cart.remove')}
+                        onClick={() => removeFromCart(product.id)}
+                      >
+                        <Icon name="trash" />
                       </button>
-                      <output aria-live="polite">{qty}</output>
-                      <button type="button" aria-label={t('cart.inc')} onClick={() => setQty(product.id, qty + 1)}>
-                        <Icon name="plus" />
-                      </button>
-                    </span>
-                    <button
-                      className="icon-btn"
-                      type="button"
-                      aria-label={t('cart.remove')}
-                      title={t('cart.remove')}
-                      onClick={() => removeFromCart(product.id)}
-                    >
-                      <Icon name="trash" />
-                    </button>
-                  </li>
-                ))}
+                    </li>
+                  );
+                })}
               </ul>
               <div className="pop-footer">
+                {compareIds.length >= 2 ? (
+                  <button className="btn btn-outline btn-block" type="button" onClick={() => onCompare(close)}>
+                    <Icon name="compare" />
+                    {tf('cart.compareN', { n: compareIds.length })}
+                  </button>
+                ) : (
+                  <p className="cmp-hint">
+                    <Icon name="compare" />
+                    {t('cart.compareHint')}
+                  </p>
+                )}
                 <p className="total">
                   <span>{t('cart.total')}</span>
-                  <strong>{money(cartTotal)}</strong>
+                  <strong>{formatMoney(cartTotal, lang)}</strong>
                 </p>
-                <button className="btn btn-gradient btn-block" type="button" disabled title={t('cart.soon')}>
-                  {t('cart.checkout')}
+                {error && (
+                  <p className="message" role="alert" data-kind="error">
+                    {t(error)}
+                  </p>
+                )}
+                <button className="btn btn-gradient btn-block" type="button" disabled={busy} onClick={() => void onCheckout(close)}>
+                  {busy ? t('cart.paying') : user ? t('cart.checkout') : t('cart.loginToCheckout')}
                 </button>
               </div>
             </>

@@ -33,15 +33,15 @@
   height: calc(100vh - 40px);
   padding: 12px 8px 8px;
   overflow-y: auto;
-  color: #fff;
-  background: linear-gradient(180deg, var(--side-1) 0%, var(--side-2) 40%, var(--side-3) 80%, var(--side-4) 100%);
-  border-radius: 28px;
+  color: var(--nav-fg);
+  background: var(--nav-bg);
+  border-radius: 24px;
 }
 
 .nav {
   display: flex;
   flex-direction: column;
-  gap: clamp(4px, 1.4vh, 19px);
+  gap: 0; /* пункты меню идут вплотную друг к другу */
 }
 
 .nav-link {
@@ -55,11 +55,14 @@
   transition: background 0.15s;
 
   &:hover {
-    background: rgb(255 255 255 / 12%);
+    background: var(--nav-hover);
   }
 
   &.active {
-    background: rgb(255 255 255 / 30%);
+    color: var(--nav-active-fg);
+    font-weight: 500;
+    background: var(--nav-active-bg);
+    box-shadow: var(--nav-active-shadow);
   }
 
   &:active {
@@ -75,16 +78,20 @@
 
 .sidebar-footer {
   margin-top: auto;
-  background: #d9d9d9;
-  border-radius: 20px;
+  border-radius: 18px;
 }
 
 .sidebar-guest {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 8px;
-  border: 2px solid #fff;
+  padding: 4px;
+}
+
+/* вторая кнопка («Зарегистрироваться») спокойнее первой */
+.sidebar-guest .btn:last-child {
+  color: var(--nav-fg);
+  background: var(--nav-hover);
 }
 
 .user-card {
@@ -92,7 +99,9 @@
   align-items: center;
   gap: 12px;
   padding: 10px 12px;
-  color: #000;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--line);
 }
 
 .avatar {
@@ -132,7 +141,7 @@
 
 .user-email {
   font-size: clamp(14px, 1.1vw, 20px);
-  color: #5a5a5a;
+  color: var(--text-muted);
 }
 
 .settings-link {
@@ -141,13 +150,14 @@
   place-items: center;
   width: 52px;
   height: 52px;
-  color: #fff;
-  background: #8c8c8c;
+  color: var(--text);
+  background: var(--surface);
   border-radius: 50%;
   transition: background 0.15s;
 
   &:hover {
-    background: var(--accent);
+    color: var(--btn-fg);
+    background: var(--btn-bg);
   }
 
   &:active {
@@ -238,14 +248,14 @@
   height: 46px;
   padding: 0;
   position: relative;
-  color: #fff;
+  color: var(--btn-fg);
   background: var(--round-bg);
   border: 0;
   border-radius: 50%;
   transition: transform 0.15s, background 0.15s, color 0.15s, box-shadow 0.15s;
 
   &:hover {
-    transform: translateY(-2px);
+    filter: brightness(1.12);
   }
 
   /* нажата или открыта панель: цвет зависит от темы */

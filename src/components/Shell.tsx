@@ -7,6 +7,7 @@ import type { TranslationKey } from '../i18n';
 import { Deco } from './Deco';
 import { Icon } from './Icon';
 import type { IconName } from './Icon';
+import { ProductModalHost } from './ProductModal';
 import { ChatPanel, CartPanel, FavoritesPanel } from './ShopPanels';
 import { ThemeMenu } from './ThemeMenu';
 
@@ -111,6 +112,7 @@ export function Shell({ children }: { children: ReactNode }) {
         <Topbar onMenu={() => setMenuOpen((open) => !open)} />
         <main className="content">{children}</main>
       </div>
+      <ProductModalHost />
     </div>
   );
 }

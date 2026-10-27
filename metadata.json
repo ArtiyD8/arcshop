@@ -1,0 +1,6 @@
+{
+  "name": "ARCSHOP - Tech Store & API",
+  "description": "Интернет-магазин электроники и техники ARCSHOP с каталогом, умным сравнением, отзывами, корзиной и полноценным набором REST API эндпоинтов.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

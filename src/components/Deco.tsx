@@ -5,7 +5,7 @@ const LAYERS: Array<[string, number]> = [
   ['deco-dark', 102],
 ];
 
-/** Диагональные полосы в правом нижнем углу (как в макетах) */
+/** Диагональные полосы в правом нижнем углу */
 export function Deco() {
   return (
     <svg className="deco" viewBox="0 0 960 750" preserveAspectRatio="xMaxYMax slice" aria-hidden="true">
